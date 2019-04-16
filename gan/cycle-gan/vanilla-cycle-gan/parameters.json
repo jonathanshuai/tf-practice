@@ -1,0 +1,12 @@
+{
+    "BATCH_SIZE": 1,
+    "HEIGHT": 128,
+    "WIDTH": 128,
+    "CHANNELS": 3,
+
+    "POOL_SIZE": 50,
+    "STDDEV": 0.02,
+
+    "G_FILTERS": 32,
+    "D_FILTERS": 32
+}

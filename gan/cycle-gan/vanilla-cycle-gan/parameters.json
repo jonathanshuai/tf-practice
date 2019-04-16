@@ -8,5 +8,5 @@
     "STDDEV": 0.02,
 
     "G_FILTERS": 32,
-    "D_FILTERS": 32
+    "D_FILTERS": 64
 }

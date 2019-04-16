@@ -1,5 +1,6 @@
 import math
 import tensorflow as tf
+import numpy as np
 from myutil import Parameters
 
 params = Parameters('parameters.json')
@@ -79,3 +80,41 @@ def generator_6blocks(x, n_downsample=2, residual_blocks=6, name="generator",
 									padding="VALID", name="final_conv")
 
 		return x
+        
+    
+def discriminator(x, n_layers=4, name="discriminator", 
+                          reuse=False, use_batch_norm=True):
+    
+    with tf.variable_scope(name, reuse=reuse):
+        x = tf.layers.conv2d(x, params.D_FILTERS, kernel_size=4, padding="SAME", 
+                                                 name="conv0")
+        x = tf.nn.leaky_relu(x, 0.2)
+
+        for i in range(n_layers):
+            mult = 2 ** (i + 1)
+            x = tf.layers.conv2d(x, params.D_FILTERS * mult, kernel_size=4, 
+                                         padding="SAME", name=f"conv{i + 1}")
+            if use_batch_norm:
+                x = tf.contrib.layers.instance_norm(x)
+            x = tf.nn.leaky_relu(x, 0.2)
+            
+        x = tf.layers.conv2d(x, 1, kernel_size=4,
+                                     padding="SAME", name="final_conv")
+
+        return x
+
+def fake_image_pool(self, n_fakes, fake, fake_pool):
+    if n_fakes < params.POOL_SIZE:
+        fake_pool[n_fakes] = fake
+        return fake
+    
+    else:
+        p = np.random.random()
+        if p > 0.5:
+            random_id = random.randint(0, params.POOL_SIZE - 1)
+            temp = fake_pool[random_id]
+            fake_pool[random_id] = fake
+            return temp
+        else:
+            return fake
+            

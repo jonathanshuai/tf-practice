@@ -103,7 +103,7 @@ def discriminator(x, n_layers=4, name="discriminator",
 
         return x
 
-def fake_image_pool(self, n_fakes, fake, fake_pool):
+def fake_image_pool(n_fakes, fake, fake_pool):
     if n_fakes < params.POOL_SIZE:
         fake_pool[n_fakes] = fake
         return fake
@@ -111,10 +111,10 @@ def fake_image_pool(self, n_fakes, fake, fake_pool):
     else:
         p = np.random.random()
         if p > 0.5:
-            random_id = random.randint(0, params.POOL_SIZE - 1)
+            random_id = np.random.randint(0, params.POOL_SIZE - 1)
             temp = fake_pool[random_id]
             fake_pool[random_id] = fake
-            return temp
+            return temp[None, :, :, :]
         else:
             return fake
             

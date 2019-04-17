@@ -1,12 +1,23 @@
 {
+    "FILE_DIR_A": "./summer2winter_yosemite/trainA",
+    "FILE_DIR_B": "./summer2winter_yosemite/trainB",
+    
     "BATCH_SIZE": 1,
-    "HEIGHT": 128,
-    "WIDTH": 128,
+    "HEIGHT": 256,
+    "WIDTH": 256,
     "CHANNELS": 3,
 
     "POOL_SIZE": 50,
     "STDDEV": 0.02,
 
     "G_FILTERS": 32,
-    "D_FILTERS": 64
+    "D_FILTERS": 64,
+    
+    "D_LEARNING_RATE": 2e-4,
+    "G_LEARNING_RATE": 2e-4,
+    "LAMBDA_A": 10,
+    "LAMBDA_B": 10,
+    
+    "RUN_NAME": "vanilla256_lr2e-4_lambda10_g32d64_stddev2e-2_ps_50",
+    "N_ITERS": 2e5
 }

@@ -37,14 +37,15 @@ def build_residual_block(inputs, filters, name="residual_block", kernel_size=3,
 # 2. several residual blocks, 
 # 3. and two fractionally-strided convolutions with stride 1/2
 
-def generator_6blocks(x, n_downsample=2, residual_blocks=6, name="generator",
+def generator_n_blocks(x, n_downsample=2, name="generator",
 							 reuse=False, use_batch_norm=True):
 	with tf.variable_scope(name, reuse=reuse):
 
 		# c7s1-64
 		x = tf.pad(x, [[0, 0], [3, 3], [3, 3], [0, 0]], "REFLECT")
 		x = tf.layers.conv2d(x, params.G_FILTERS, kernel_size=7, strides=1,
-									padding="VALID", name="conv0")
+									padding="VALID", name="conv0",
+								kernel_initializer=tf.initializers.truncated_normal(mean=0, stddev=params.STDDEV))
 
 		x = tf.nn.relu(x)
 
@@ -53,7 +54,8 @@ def generator_6blocks(x, n_downsample=2, residual_blocks=6, name="generator",
 			mult = 2 ** (i + 1)
 			x = tf.pad(x, [[0, 0], [1, 1], [1, 1], [0, 0]])
 			x = tf.layers.conv2d(x, params.G_FILTERS * mult, kernel_size=3, strides=2, 
-										padding="VALID", name=f"downsample_{i}")
+										padding="VALID", name=f"downsample_{i}",
+								kernel_initializer=tf.initializers.truncated_normal(mean=0, stddev=params.STDDEV))
 			if use_batch_norm:
 				x = tf.contrib.layers.instance_norm(x)
 
@@ -62,44 +64,46 @@ def generator_6blocks(x, n_downsample=2, residual_blocks=6, name="generator",
 
 		# R256 x 6
 		mult = 2 ** (n_downsample)
-		for i in range(residual_blocks):
+		for i in range(params.RESIDUAL_BLOCKS):
 			x = build_residual_block(x, params.G_FILTERS * mult, name=f'residual_block_{i}')
 
-		# u128
-		# x = tf.pad(x, [[0, 0], [1, 1], [1, 1], [0, 0]])
-		x = tf.layers.conv2d_transpose(x, 128, kernel_size=3, strides=2,
-											padding="SAME", name="deconv0")
+		# u128, u64
+		for i in range(n_downsample):
+			mult = 2 ** (n_downsample - i - 1)
 
-		# u64
-		x = tf.layers.conv2d_transpose(x, 64, kernel_size=3, strides=2,
-											padding="SAME", name="deconv1")
+			x = tf.layers.conv2d_transpose(x, 64 * mult, kernel_size=3, strides=2,
+												padding="SAME", name=f"deconv{i}",
+												kernel_initializer=tf.initializers.truncated_normal(mean=0, stddev=params.STDDEV))
 
 		# c7s1-3
 		x = tf.pad(x, [[0, 0], [3, 3], [3, 3], [0, 0]], "REFLECT")
 		x = tf.layers.conv2d(x, 3, kernel_size=7, strides=1,
-									padding="VALID", name="final_conv")
+									padding="VALID", name="final_conv",
+								kernel_initializer=tf.initializers.truncated_normal(mean=0, stddev=params.STDDEV))
 
 		return x
-        
     
 def discriminator(x, n_layers=4, name="discriminator", 
                           reuse=False, use_batch_norm=True):
     
     with tf.variable_scope(name, reuse=reuse):
         x = tf.layers.conv2d(x, params.D_FILTERS, kernel_size=4, padding="SAME", 
-                                                 name="conv0")
+                                                 name="conv0",
+								kernel_initializer=tf.initializers.truncated_normal(mean=0, stddev=params.STDDEV))
         x = tf.nn.leaky_relu(x, 0.2)
 
         for i in range(n_layers):
             mult = 2 ** (i + 1)
             x = tf.layers.conv2d(x, params.D_FILTERS * mult, kernel_size=4, 
-                                         padding="SAME", name=f"conv{i + 1}")
+                                         padding="SAME", name=f"conv{i + 1}",
+								kernel_initializer=tf.initializers.truncated_normal(mean=0, stddev=params.STDDEV))
             if use_batch_norm:
                 x = tf.contrib.layers.instance_norm(x)
             x = tf.nn.leaky_relu(x, 0.2)
             
         x = tf.layers.conv2d(x, 1, kernel_size=4,
-                                     padding="SAME", name="final_conv")
+                                     padding="SAME", name="final_conv",
+								kernel_initializer=tf.initializers.truncated_normal(mean=0, stddev=params.STDDEV))
 
         return x
 

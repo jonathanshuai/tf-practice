@@ -1,6 +1,6 @@
 {
-    "FILE_DIR_A": "/raid/home/jshuai/dev/datasets/images/maps/trainA",
-    "FILE_DIR_B": "/raid/home/jshuai/dev/datasets/images/maps/trainB",
+    "FILE_DIR_A": "/raid/home/jshuai/dev/datasets/images/summer2winter_yosemite/trainA",
+    "FILE_DIR_B": "/raid/home/jshuai/dev/datasets/images/summer2winter_yosemite/trainB",
     
     "BATCH_SIZE": 1,
     "HEIGHT": 256,
@@ -14,12 +14,13 @@
     "RESIDUAL_BLOCKS": 9,
     "D_FILTERS": 64,
     
-    "D_LEARNING_RATE": 6e-5,
+    "D_LEARNING_RATE": 1e-4,
     "G_LEARNING_RATE": 2e-4,
     "LAMBDA_A": 10,
     "LAMBDA_B": 10,
     
     "RUN_NAME": "vanilla256_lr2e-4_lambda10_g32d64_stddev2e-2_ps_50",
     "SAVE_PATH": "",
-    "N_ITERS": 2
+    "N_ITERS": 100000,
+    "G_ITERS": 4
 }

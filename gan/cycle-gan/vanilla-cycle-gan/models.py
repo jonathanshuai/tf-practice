@@ -81,7 +81,7 @@ def generator_n_blocks(x, n_downsample=2, name="generator",
 									padding="VALID", name="final_conv",
 								kernel_initializer=tf.initializers.truncated_normal(mean=0, stddev=params.STDDEV))
 
-		return x
+		return tf.nn.tanh(x)
     
 def discriminator(x, n_layers=4, name="discriminator", 
                           reuse=False, use_batch_norm=True):

@@ -1,0 +1,18 @@
+{
+    
+    "BATCH_SIZE": 64,
+    "IMAGE_SIZE": "AUTO",
+    "CHANNELS": 3,
+    
+    "N_CLASSES": "AUTO",
+
+    "STDDEV": 0.015,
+
+    "FILTERS": 160,
+    
+    "LEARNING_RATE": 2e-4,
+    
+    "RUN_NAME": "hybrid_bs64_lr2e-4_filters160_1357_blocks4",
+    "SAVE_PATH": "",
+    "N_EPOCHS": 50
+}

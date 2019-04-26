@@ -130,8 +130,9 @@ class Unet:
 					use_pad=self.use_pad, 
 					name=f"expansive_{i}", use_batch_norm=self.use_batch_norm)
 
-		print(x)
-
+		x = tf.layers.conv2d(x, 1, kernel_size=1, strides=1, 
+								padding="VALID", name="final_conv", 
+								kernel_initializer=truncated_normal(0, params.STDDEV))
 		return x
 
 	def get_input_size(self, output_size):
